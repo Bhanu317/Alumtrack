@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="styles2.css">
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+</head>
+<body>
+
+    <header>
+        <nav>
+            <div class="left">
+                <img id="p1" src="https://i.ibb.co/m5vz85X/IMG-20231223-WA0014.jpg"  alt="" width="85px" height="85px">SGSITS<br> Alumni Tracker</div>
+            <div class="right">
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="about">About SGSITS</a></li>
+                <li><a href="contact">Contact us</a></li>
+            </ul>
+            
+            </div>
+            <div class="dropdown">
+                <a class="btn btn-dark dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"></a>
+                <ul class="dropdown-menu">
+                  <li><a class="dropdown-item" href="/">Home</a></li>
+                  <li><a class="dropdown-item" href="contact">Contact us</a></li>
+                  <li><a class="dropdown-item" href="students">Search Alumni</a></li>
+                </ul>
+              </div>
+        </nav>
+    </header>
+    <div id="b10">
+    <div id="b1">
+        <form name="fo" id="f" action="searchs" onsubmit="return required()"  data-aos="fade-up">
+            <h2 id="fh">Find Alumni </h2>
+            <div id="nf">
+            <input class="i1" id="fn" type="search" name="FIRST_NAME" placeholder= "FIRST NAME"  />   
+   
+<input class="i1" id="ln" type="search" name="LAST_NAME" placeholder="LAST NAME" />
+
+  
+  
+  
+    <select class="i1" type="search" name="DEGREE" placeholder="DEGREE" >
+        <option value="">DEGREE</option>
+        <option value="BE">BE</option>
+        <option value="MTech">MTech</option>
+        <option value="MCA">MCA</option>
+        <option value="MBA">MBA</option>
+        <option value="B.Pharm">B.Pharm</option>
+    </select>
+
+    <select class="i1"  type="search" name="BRANCH" placeholder="BRANCH" >
+        <option value="">BRANCH</option>
+        <option value="BM">BM</option>
+        <option value="CIVIL">CIVIL</option>
+        <option value="CS">CS</option>
+        <option value="EC">EC</option>
+        <option value="EE">EE</option>
+        <option value="EI">EI</option>
+        <option value="MECH">MECHANICAL</option>
+        <option value="IP">IP</option>
+        <option value="IT">IT</option>
+    </select>
+
+<input class="i1" id="yn" type="search" name="YEAR_OF_PASSING" placeholder="YEAR OF PASSING" />
+
+<input class="i1" type="search" name="CCOUNTRY_OR_CITY" placeholder="CITY / COUNTRY" />
+
+<input class="i1" type="search" name="CURRENT_ORGANIZATION_WITH_ADDRESS" placeholder="CURRENT ORGANIZATION" />
+ 
+<input class="btt1" type="submit" value="Search">
+</div>
+        </form>
+    </div>
+
+<div id="b2">
+    <h1>Alumni List</h1>
+    
+    <table id="tb1" width="100%" border="1">
+        <tr >
+            <th class="at1">First Name</th>
+            <th class="at1">Last Name</th>
+            <th class="at1">Degree</th>
+            <th class="at1">Branch</th>
+            <th class="at1">Year of Passing</th>
+            <th class="at1">Current Occupation</th>
+            <th class="at1">Current Designation</th>
+            <th class="at1">Current Organization</th>
+            <th class="at1">Contact No</th>
+            <th class="at1">Email</th>
+            <th class="at1">Country/City</th>
+        </tr>
+
+       <% if(students?.length !== 0){ %>
+        <% for(var i=0;i<students?.length;i++){ %>
+            <tr >
+                <td class="at2"><%- students[i].FIRST_NAME %></td>
+                <td class="at2"><%- students[i].LAST_NAME %></td>
+                <td class="at2"><%- students[i].DEGREE %></td>
+                <td class="at2"><%- students[i].BRANCH %></td>
+                <td class="at2"><%- students[i].YEAR_OF_PASSING %></td>
+                <td class="at2"><%- students[i].CURRENT_OCCUPATION %></td>
+                <td class="at2"><%- students[i].CURRENT_DESIGNATION %></td>
+                <td class="at2"><%- students[i].CURRENT_ORGANIZATION_WITH_ADDRESS %></td>
+                <td class="at2"><%- students[i].CONTACT_NUMBER %></td>
+                <td class="at2"><%- students[i].EMAIL %></td>
+                <td class="at2"><%- students[i].CCOUNTRY_OR_CITY %></td>
+            </tr>
+        <% } %>
+            <% } else{ %>
+                <tr>
+                    <td class="at2">Data not found</td>
+                    <td class="at2">Data not found</td>
+                    <td class="at2">Data not found</td>
+                    <td class="at2">Data not found</td>
+                    <td class="at2">Data not found</td>
+                    <td class="at2">Data not found</td>
+                    <td class="at2">Data not found</td>
+                    <td class="at2">Data not found</td>
+                    <td class="at2">Data not found</td>
+                    <td class="at2">Data not found</td>
+                    <td class="at2">Data not found</td>
+                </tr>
+        <% } %>
+    </table>
+</div>
+
+<footer>
+        <div id="b5" >
+        <div class="container">
+            <p>&copy; 2023 SGSITS AlumTrack. All rights reserved.</p>
+        </div>
+        </div>
+    </footer>
+</div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+    <script>
+      AOS.init({
+        offset:300,
+        duration:2000
+      });
+
+      
+    </script>
+    <script>
+        function required()
+        {
+            var e1=document.fo.FIRST_NAME.value;
+            var e2=document.fo.LAST_NAME.value;
+            var e3=document.fo.DEGREE.value;
+            var e4=document.fo.BRANCH.value;
+            var e5=document.fo.YEAR_OF_PASSING.value;
+            var e6=document.fo.CCOUNTRY_OR_CITY.value;
+            var e7=document.fo.CURRENT_ORGANIZATION_WITH_ADDRESS.value;
+            if(e1==="" && e2==="" && e3==="" && e4==="" && e5==="" && e6==="" && e7==="")
+            {
+                alert("Please input a value");
+                return false;
+            }
+            else{
+                return true;
+            }
+        }
+    </script>
+
+
+
+    
+</body>
+</html>
