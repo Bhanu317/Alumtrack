@@ -1,11 +1,21 @@
 var con=require("./connection");
 var express=require('express');
+const bodyParser = require('body-parser');
+const session = require('express-session');
+
 var app=express();
 app.use(express.json());
 
 
 
 app.set('view engine','ejs');
+
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(session({
+  secret: 'Bhanuraghu',
+  resave: false,
+  saveUninitialized: true,
+}));
 
 app.get('/',function(req,res){
     res.sendFile(__dirname+'/index.html')
@@ -35,6 +45,23 @@ app.get('/contact',function(req,res){
 app.get('/styles4.css',function(req,res){
     res.sendFile(__dirname+'/styles4.css')
 });
+app.get('/adminlogin',function(req,res){
+    res.sendFile(__dirname+'/login.html')
+});
+
+
+// Middleware to check if the user is authenticated
+const checkAuth = (req, res, next) => {
+    if (req.session.isAdmin) {
+      next();
+    } else {
+      res.redirect('/');
+    }
+  };
+
+  app.get('/register',checkAuth,function(req,res){
+    res.sendFile(__dirname+'/register.html')
+});
 
 
 app.get('/students',function(req,res){
@@ -59,7 +86,7 @@ app.get('/students',function(req,res){
         con.query(sql1,function(error,result){
             if(error) console.log(error);
             console.log(result);
-            res.render(__dirname+"/students",{students:result});
+            res.render(__dirname+"/students",{students:result,isAdmin: req.session.isAdmin});
             //console.log(result);
         });
     
@@ -92,7 +119,7 @@ app.get('/searchs',function(req,res){
             if(error) console.log(error);
             
         
-            res.render(__dirname+"/students",{students:result});
+            res.render(__dirname+"/students",{students:result,isAdmin: req.session.isAdmin});
             if(typeof document!=='undefined')
             {
                 document.getElementById("f").reset();
@@ -101,7 +128,112 @@ app.get('/searchs',function(req,res){
     })
 })
 
+/*const adminCredentials = {
+    id: 'admin@123.com',
+    password: 'admin123@'
+};
 
+// Admin login route
+app.post('/admin/login', (req, res) => {
+    const { id, password } = req.body;
+
+    if (id === adminCredentials.id && password === adminCredentials.password) {
+        res.status(200).json({ message: 'Authenticated successfully!' });
+    } else {
+        res.status(401).json({ message: 'Invalid ID or password' });
+    }
+});*/
+
+// Route to handle login logic
+app.post('/login', (req, res) => {
+  const { email, password } = req.body;
+
+  // Admin credentials
+  const adminEmail = 'admin@123.com';
+  const adminPassword = 'admin123@';
+
+  if (email === adminEmail && password === adminPassword) {
+    req.session.isAdmin = true;
+    res.redirect('/');
+  } else {
+    res.send('Invalid credentials');
+  }
+});
+
+
+
+// Home route
+app.get('/', checkAuth, (req, res) => {
+    res.sendFile(__dirname+'/index.html');
+});
+
+app.post('/register',checkAuth,(req,res)=>{
+    const {
+        SERIAL_NUMBER,
+        FIRST_NAME,
+        LAST_NAME,
+        DEGREE,
+        BRANCH,
+        YEAR_OF_PASSING,
+        CURRENT_OCCUPATION,
+        CURRENT_DESIGNATION,
+        CONTACT_NUMBER,
+        EMAIL,
+        CCOUNTRY_OR_CITY,
+        CURRENT_ORGANIZATION_WITH_ADDRESS
+    } = req.body;
+
+    if (!SERIAL_NUMBER || !FIRST_NAME || !LAST_NAME || !DEGREE || !BRANCH || !YEAR_OF_PASSING ||
+        !CURRENT_OCCUPATION || !CURRENT_DESIGNATION || !CONTACT_NUMBER || !EMAIL || !CCOUNTRY_OR_CITY || !CURRENT_ORGANIZATION_WITH_ADDRESS) {
+        return res.status(400).send('All fields are required.');
+    }
+
+    const sql1 = "INSERT INTO personal_information (SERIAL_NUMBER, FIRST_NAME, LAST_NAME, CONTACT_NUMBER, EMAIL, CCOUNTRY_OR_CITY) VALUES (?, ?, ?, ?, ?, ?)";
+    const sql2 = "INSERT INTO academic_information (SERIAL_NUMBER, BRANCH, DEGREE, YEAR_OF_PASSING) VALUES (?, ?, ?, ?)";
+    const sql3 = "INSERT INTO professional_information (SERIAL_NUMBER, CURRENT_OCCUPATION, CURRENT_DESIGNATION, CURRENT_ORGANIZATION_WITH_ADDRESS) VALUES (?, ?, ?, ?)";
+
+    con.beginTransaction(err => {
+        if (err) {
+            return res.status(500).send('Transaction error: ' + err);
+        }
+
+        con.query(sql1, [SERIAL_NUMBER, FIRST_NAME, LAST_NAME, CONTACT_NUMBER, EMAIL, CCOUNTRY_OR_CITY], (error, results) => {
+            if (error) {
+                return con.rollback(() => {
+                    res.status(500).send('Error inserting data into personal_information: ' + error);
+                });
+            }
+
+            con.query(sql2, [SERIAL_NUMBER, BRANCH, DEGREE, YEAR_OF_PASSING], (error, results) => {
+                if (error) {
+                    return con.rollback(() => {
+                        res.status(500).send('Error inserting data into academic_information: ' + error);
+                    });
+                }
+
+                con.query(sql3, [SERIAL_NUMBER, CURRENT_OCCUPATION, CURRENT_DESIGNATION, CURRENT_ORGANIZATION_WITH_ADDRESS], (error, results) => {
+                    if (error) {
+                        return con.rollback(() => {
+                            res.status(500).send('Error inserting data into professional_information: ' + error);
+                        });
+                    }
+
+                    con.commit(err => {
+                        if (err) {
+                            return con.rollback(() => {
+                                res.status(500).send('Transaction commit error: ' + err);
+                            });
+                        }
+                        //alert("data saved successfully");
+                        res.status(200).send('Data inserted successfully');
+                        //res.send(alert("Data inserted successfully"));
+                        //res.redirect('/register');
+                    });
+                });
+            });
+        });
+    });
+})
 
 
 

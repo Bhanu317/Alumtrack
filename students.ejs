@@ -77,7 +77,15 @@
         </form>
     </div>
 
+    <% if (typeof isAdmin !== 'undefined' && isAdmin) { %>
+        <button class="btt1"><a href="register">Insert Alumni</a></button>
+      <% } %>
+    </br>
+    <br>
+
 <div id="b2">
+    
+    <br>
     <h1>Alumni List</h1>
     
     <table id="tb1" width="100%" border="1">
@@ -93,6 +101,10 @@
             <th class="at1">Contact No</th>
             <th class="at1">Email</th>
             <th class="at1">Country/City</th>
+            <% if (typeof isAdmin !== 'undefined' && isAdmin) { %>
+                <th class="at1">Delete</th>
+                <th class="at1">Update</th>
+              <% } %>
         </tr>
 
        <% if(students?.length !== 0){ %>
@@ -109,6 +121,10 @@
                 <td class="at2"><%- students[i].CONTACT_NUMBER %></td>
                 <td class="at2"><%- students[i].EMAIL %></td>
                 <td class="at2"><%- students[i].CCOUNTRY_OR_CITY %></td>
+                <% if (typeof isAdmin !== 'undefined' && isAdmin) { %>
+                    <td class="at2">Delete</td>
+                    <td class="at2">Update</td>
+                  <% } %>
             </tr>
         <% } %>
             <% } else{ %>
@@ -124,6 +140,10 @@
                     <td class="at2">Data not found</td>
                     <td class="at2">Data not found</td>
                     <td class="at2">Data not found</td>
+                    <% if (typeof isAdmin !== 'undefined' && isAdmin) { %>
+                        <td class="at2">Delete</td>
+                        <td class="at2">Update</td>
+                      <% } %>
                 </tr>
         <% } %>
     </table>
